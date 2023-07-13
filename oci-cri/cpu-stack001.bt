@@ -1,0 +1,31 @@
+#!/usr/bin/env bpftrace
+
+# top CPU-consuming process
+profile:hz:99 {
+    @[comm] = count();
+}
+
+# CPU utilization by process in a container
+profile:hz:99 /container-pid != 0 {
+    @[pid, comm] = count();
+}
+
+# System call count by process in a container
+tracepoint:syscalls:sys_enter_* /pid != 0 {
+    @[pid, comm, probe] = count();
+}
+
+# count kernel function calls
+kprobe:do_sys_open /comm != "bpftrace"/ {
+    @[kstack] = count();
+}
+
+# off-CPU time latency for process in container
+profile:hz:99 /container-pid == <PID>/ {
+    @offcpu = lhist(arg1);
+}
+
+# off-CPU time, responsible functions
+profile:hz:99 /container-pid == <PID> {
+    @[ustack] = count();
+}
