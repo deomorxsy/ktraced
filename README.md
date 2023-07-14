@@ -1,4 +1,4 @@
-# ktrace
+# ktraced
 Kernel tracing and language runtime profiling scripts ;D [WIP]
 
 ## BPF Portability
@@ -12,15 +12,21 @@ Main tracers
 
 Languages
 - bpftrace
-- libbpf [on-hold]
 - BCC [on-hold]
 
-### oci-cri directory
-OCI-CRI directory is for tracing and profiling scripts aimed to run inside an OCI containers managed by k8s CRI.
+### oci-cri
+For tracing and profiling scripts aimed to run inside an OCI containers managed by k8s CRI.
 
-## cenv directory
-cenv directory is for tracing and profiling scripts aimed to run in constrained environments such as embedded systems or lightweight containers and microVMs. Busybox OS and musl libc are expected.
+## co-re
+CO-RE approach to BPF scripting.
 
+- ayaya: ...rust
+- constr: Directory for tracing and profiling scripts aimed to run in constrained environments such as embedded systems or lightweight containers and microVMs. Busybox OS and musl libc expected.
+
+## jit
+Aimed for jit-compiled environments.
+
+- hotspot: jvm hotspot scripts
 
 ## References
-- [BPF CO-RE (Compile Once – Run Everywhere](https://nakryiko.com/posts/bpf-portability-and-co-re/)
+- [BPF CO-RE (Compile Once – Run Everywhere)](https://nakryiko.com/posts/bpf-portability-and-co-re/)
