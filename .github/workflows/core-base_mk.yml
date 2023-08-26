@@ -1,0 +1,45 @@
+name: core bpf cicd: base make build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ staging ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.job.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        job: - { os: ubuntu-20.04, target: x86_64-unknown-linux-gnu, features: feat_os_unix, use-cross: use-cross }
+
+        #job: - { os: alpine-13.04 , target: x86_64-unknown-linux-gnu    , features: feat_os_unix, use-cross: use-cross }
+
+        #job: - { os: ubuntu-20.04, target: i586-unknown-linux-gnu, features: feat_os_unix, use-cross: use-cross }
+        #job: - { os: ubuntu-20.04, target: i686-unknown-linux-musl, features: feat_os_unix_musl, use-cross: use-cross }
+        #job: - { os: ubuntu-20.04, target: arm-unknown-linux-gnueabihf,    features: feat_os_unix_gnueabihf, use-cross: use-cross }
+
+        # todo: test with LIMA
+        ## { os: macos-13, target: x86_64-apple-darwin, features: feat_os_macos }
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: setup prerequisites
+        shell: bash
+        run: |
+          echo "uname -a"
+          uname -a
+          echo "pwd"
+          pwd
+          sudo apt-get -y install bpfcc-tools linux-headers-$(uname -r)
+          sudo /usr/sbin/profile-bpfcc -adf -F 99 > my_file.txt
+          git clone https://github.com/uutils/coreutils
+          cd coreutils
+          cargo test
+      - name: upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: my-artifact
+          path: my_file.txt
+          retention-days: 5
